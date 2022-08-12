@@ -5,6 +5,9 @@ HEIGHT = 900
 FPS = 60
 TITLE = "NEA Prototype"
 BLACK = (0, 0, 0)
+MIN_ROOMS = 8
+MAX_ROOMS = 10
+MAX_DEPTH = 10
 DUNGEON_SIZE = (16, 16)
 POSSIBLE_ROOMS = {
         'N': ['NESW', 'S', 'NS', 'SW', 'ES', 'ESW', 'NSW', 'NES'],

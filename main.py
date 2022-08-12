@@ -7,18 +7,16 @@ import dungeon_generator as dg
 
 class Game:
     def __init__(self):
+        self.dungeon = None
         pygame.init()
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         pygame.display.set_caption(TITLE)
         self.clock = pygame.time.Clock()
         self.room_images = None
-        self.load_assets()
-        self.dungeon = dg.Dungeon(self, DUNGEON_SIZE)
-        self.screen.fill(BLACK)
+        self.reset()
 
     def load_assets(self):
         self.room_images = f.load_sprite_sheet("assets/room_strip_opaque.png")
-
         self.room_path_dict = {
             'NESW': self.room_images[0],
             'EW': self.room_images[1],
@@ -40,8 +38,12 @@ class Game:
         }
 
     def reset(self):
+        self.load_assets()
         self.screen.fill(BLACK)
         self.dungeon = dg.Dungeon(self, DUNGEON_SIZE)
+        while self.dungeon.count_rooms() < MIN_ROOMS or self.dungeon.count_rooms() > MAX_ROOMS or len(self.dungeon.rooms[self.dungeon.start_pos[0]][self.dungeon.start_pos[1]].paths) != 1:
+            self.dungeon = dg.Dungeon(self, DUNGEON_SIZE)
+        print(self.dungeon.count_rooms())
 
     def update(self):
         self.dungeon.update()
