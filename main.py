@@ -41,9 +41,9 @@ class Game:
         self.load_assets()
         self.screen.fill(BLACK)
         self.dungeon = dg.Dungeon(self, DUNGEON_SIZE)
+        # Dungeons are generated until the number of rooms is between a certain range and there is only one connection to the spawn room
         while self.dungeon.count_rooms() < MIN_ROOMS or self.dungeon.count_rooms() > MAX_ROOMS or len(self.dungeon.rooms[self.dungeon.start_pos[0]][self.dungeon.start_pos[1]].paths) != 1:
             self.dungeon = dg.Dungeon(self, DUNGEON_SIZE)
-        print(self.dungeon.count_rooms())
 
     def update(self):
         self.dungeon.update()
