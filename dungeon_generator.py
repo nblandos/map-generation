@@ -45,43 +45,40 @@ class Dungeon:
         self.rooms = [[None for _ in range(w)] for _ in range(h)]
         self.start_pos = [h // 2, w // 2]
         self.depth = 0
+        self.new_pos = None
         self.new_room = None
         self.generate_dungeon()
 
     def generate_dungeon(self):
         # Creates the spawn room
-        self.rooms[self.start_pos[0]][self.start_pos[1]] = Room(self.game, 'N', self.start_pos, 'spawn')
+        self.rooms[self.start_pos[0]][self.start_pos[1]] = Room(self.game, ['N'], self.start_pos, 'spawn')
         # Calls the necessary functions to generate the dungeon
         self.create_room(self.rooms[self.start_pos[0]][self.start_pos[1]])
         self.create_connections()
 
     def create_room(self, room):
         # Main function that creates the dungeon
-        self.depth += 1
         free_paths = self.find_free_paths(room)
+        available_paths = (list(set(free_paths).intersection(room.paths)))
 
         """The recursive function will stop when either:
                 - There are no more free paths
                 - The recursive function has been called more than MAX_DEPTH times"""
-        if len(free_paths) > 0 and self.depth < MAX_DEPTH:
+        if available_paths and self.depth < MAX_DEPTH:
+            self.depth += 1
+            random.shuffle(available_paths)
             # If the current room has a free path, a new room is created there
-            if 'N' in free_paths and 'N' in room.paths:
-                # The new room has a randomized set of available paths
-                self.new_room = Room(self.game, random.choice(POSSIBLE_ROOMS['N']), [room.pos[0] - 1, room.pos[1]])
-                # The new room is added to the 2D array 'rooms'
-                self.rooms[room.pos[0] - 1][room.pos[1]] = self.new_room
-
-            if 'S' in free_paths and 'S' in room.paths:
-                self.new_room = Room(self.game, random.choice(POSSIBLE_ROOMS['S']), [room.pos[0] + 1, room.pos[1]])
-                self.rooms[room.pos[0] + 1][room.pos[1]] = self.new_room
-
-            if 'E' in free_paths and 'E' in room.paths:
-                self.new_room = Room(self.game, random.choice(POSSIBLE_ROOMS['E']), [room.pos[0], room.pos[1] + 1])
-                self.rooms[room.pos[0]][room.pos[1] + 1] = self.new_room
-
-            if 'W' in free_paths and 'W' in room.paths:
-                self.new_room = Room(self.game, random.choice(POSSIBLE_ROOMS['W']), [room.pos[0], room.pos[1] - 1])
-                self.rooms[room.pos[0]][room.pos[1] - 1] = self.new_room
+            for path in available_paths:
+                if path == 'N':
+                    self.new_pos = [room.pos[0] - 1, room.pos[1]]
+                elif path == 'E':
+                    self.new_pos = [room.pos[0], room.pos[1] + 1]
+                elif path == 'S':
+                    self.new_pos = [room.pos[0] + 1, room.pos[1]]
+                elif path == 'W':
+                    self.new_pos = [room.pos[0], room.pos[1] - 1]
+                self.new_room = Room(self.game, random.choice(POSSIBLE_ROOMS[path]), self.new_pos)
+                self.rooms[self.new_pos[0]][self.new_pos[1]] = self.new_room
 
             """Once the current room has created its neighbours,
             the recursive function is called again with the new room as the argument."""

@@ -11,8 +11,8 @@ MAX_ROOMS = 12
 MAX_DEPTH = 50
 DUNGEON_SIZE = (16, 16)
 POSSIBLE_ROOMS = {
-        'N': ['NESW', 'S', 'NS', 'SW', 'ES', 'ESW', 'NSW', 'NES'],
-        'S': ['NESW', 'N', 'NS', 'NW', 'NE', 'NEW', 'NSW', 'NES'],
-        'E': ['NESW', 'W', 'EW', 'NW', 'SW', 'ESW', 'NSW', 'NEW'],
-        'W': ['NESW', 'E', 'NE', 'ES', 'EW', 'ESW', 'NEW', 'NES'],
+        'N': [['N', 'E', 'S', 'W'], ['S'], ['N', 'S'], ['S', 'W'], ['E', 'S'], ['E', 'S', 'W'], ['N', 'S', 'W'], ['N', 'E', 'S']],
+        'E': [['N', 'E', 'S', 'W'], ['W'], ['E', 'W'], ['N', 'W'], ['S', 'W'], ['E', 'S', 'W'], ['N', 'S', 'W'], ['N', 'E', 'W']],
+        'S': [['N', 'E', 'S', 'W'], ['N'], ['N', 'S'], ['N', 'W'], ['N', 'E'], ['N', 'E', 'W'], ['N', 'S', 'W'], ['N', 'E', 'S']],
+        'W': [['N', 'E', 'S', 'W'], ['E'], ['N', 'E'], ['E', 'S'], ['E', 'W'], ['E', 'S', 'W'], ['N', 'E', 'W'], ['N', 'E', 'S']],
         }
