@@ -38,6 +38,7 @@ class Game:
         }
 
     def reset(self):
+        # Initializes a new dungeon
         self.load_assets()
         self.screen.fill(BLACK)
         self.dungeon = dg.Dungeon(self, DUNGEON_SIZE)
