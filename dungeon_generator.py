@@ -11,6 +11,7 @@ class Room:
         # Initializes the Room class
         self.game = game
         self.paths = paths
+        self.free_paths = []
         self.pos = pos
         self.type = room_type
         # None is assigned to image as connections are not yet correctly assigned
@@ -31,6 +32,9 @@ class Room:
         elif self.type == 'spawn':
             return 'S'
 
+    # TODO- add inheritance : Dungeon to many rooms
+    # TODO - UML diagram in analysis
+
 
 # Defines the Dungeon class
 class Dungeon:
@@ -44,7 +48,6 @@ class Dungeon:
         # Creates an empty 2D array that will store the rooms
         self.rooms = [[None for _ in range(w)] for _ in range(h)]
         self.start_pos = [h // 2, w // 2]
-        self.depth = 0
         self.new_pos = None
         self.new_room = None
         self.generate_dungeon()
@@ -53,21 +56,19 @@ class Dungeon:
         # Creates the spawn room
         self.rooms[self.start_pos[0]][self.start_pos[1]] = Room(self.game, ['N'], self.start_pos, 'spawn')
         # Calls the necessary functions to generate the dungeon
-        self.create_room(self.rooms[self.start_pos[0]][self.start_pos[1]])
+        self.create_neighbours(self.rooms[self.start_pos[0]][self.start_pos[1]])
         self.create_connections()
 
-    def create_room(self, room):
+    def create_neighbours(self, room):
         # Main function that creates the dungeon
         free_paths = self.find_free_paths(room)
+        # Uses a set to remove the paths that have been randomly chosen but are not free
         available_paths = (list(set(free_paths).intersection(room.paths)))
-
-        """The recursive function will stop when either:
-                - There are no more free paths
-                - The recursive function has been called more than MAX_DEPTH times"""
-        if available_paths and self.depth < MAX_DEPTH:
-            self.depth += 1
+        # TODO - add comments and add to analysis
+        if available_paths:
+            # Shuffles so that the paths are not always chosen in the same order
             random.shuffle(available_paths)
-            # If the current room has a free path, a new room is created there
+            # Loops through the available generated paths and assigns the new room coordinates
             for path in available_paths:
                 if path == 'N':
                     self.new_pos = [room.pos[0] - 1, room.pos[1]]
@@ -77,12 +78,14 @@ class Dungeon:
                     self.new_pos = [room.pos[0] + 1, room.pos[1]]
                 elif path == 'W':
                     self.new_pos = [room.pos[0], room.pos[1] - 1]
+                # Instantiates the new room and adds it to the 2D array 'rooms'
                 self.new_room = Room(self.game, random.choice(POSSIBLE_ROOMS[path]), self.new_pos)
                 self.rooms[self.new_pos[0]][self.new_pos[1]] = self.new_room
 
             """Once the current room has created its neighbours,
-            the recursive function is called again with the new room as the argument."""
-            self.create_room(self.new_room)
+            the recursive function is called again with one of the neighbours as the argument.
+            As available paths is shuffled, the next room explored will be random."""
+            self.create_neighbours(self.new_room)
 
     def count_rooms(self):
         # Returns the number of rooms in the dungeon
@@ -92,27 +95,6 @@ class Dungeon:
                 if room:
                     num_rooms += 1
         return num_rooms
-
-    def find_free_paths(self, room):
-        # Returns a list of free paths for the current room
-        free_paths = []
-        if room.pos[1] + 1 > self.size.x - 1:
-            pass
-        elif self.rooms[room.pos[0]][room.pos[1] + 1] is None:
-            free_paths.append('E')
-        if room.pos[1] - 1 < 0:
-            pass
-        elif self.rooms[room.pos[0]][room.pos[1] - 1] is None:
-            free_paths.append('W')
-        if room.pos[0] + 1 > self.size.y - 1:
-            pass
-        elif self.rooms[room.pos[0] + 1][room.pos[1]] is None:
-            free_paths.append('S')
-        if room.pos[0] - 1 < 0:
-            pass
-        elif self.rooms[room.pos[0] - 1][room.pos[1]] is None:
-            free_paths.append('N')
-        return free_paths
 
     def display_rooms(self):
         # Loops through the 2D array and displays the rooms
@@ -155,6 +137,27 @@ class Dungeon:
                     elif self.rooms[room.pos[0]][room.pos[1] - 1] is not None:
                         room.paths += 'W'
                     room.image = room.assign_image()
+
+    def find_free_paths(self, room):
+        free_paths = []
+        # Returns a list of free paths for the current room
+        if room.pos[1] + 1 > self.size.x - 1:
+            pass
+        elif self.rooms[room.pos[0]][room.pos[1] + 1] is None:
+            free_paths.append('E')
+        if room.pos[1] - 1 < 0:
+            pass
+        elif self.rooms[room.pos[0]][room.pos[1] - 1] is None:
+            free_paths.append('W')
+        if room.pos[0] + 1 > self.size.y - 1:
+            pass
+        elif self.rooms[room.pos[0] + 1][room.pos[1]] is None:
+            free_paths.append('S')
+        if room.pos[0] - 1 < 0:
+            pass
+        elif self.rooms[room.pos[0] - 1][room.pos[1]] is None:
+            free_paths.append('N')
+        return free_paths
 
     def update(self):
         # Code here is called every frame

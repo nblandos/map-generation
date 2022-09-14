@@ -13,6 +13,7 @@ class Game:
         pygame.display.set_caption(TITLE)
         self.clock = pygame.time.Clock()
         self.room_images = None
+        self.room_path_dict = None
         self.reset()
 
     def load_assets(self):
