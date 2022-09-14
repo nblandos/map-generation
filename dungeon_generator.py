@@ -32,9 +32,6 @@ class Room:
         elif self.type == 'spawn':
             return 'S'
 
-    # TODO- add inheritance : Dungeon to many rooms
-    # TODO - UML diagram in analysis
-
 
 # Defines the Dungeon class
 class Dungeon:
@@ -56,15 +53,14 @@ class Dungeon:
         # Creates the spawn room
         self.rooms[self.start_pos[0]][self.start_pos[1]] = Room(self.game, ['N'], self.start_pos, 'spawn')
         # Calls the necessary functions to generate the dungeon
-        self.create_neighbours(self.rooms[self.start_pos[0]][self.start_pos[1]])
+        self.create_room(self.rooms[self.start_pos[0]][self.start_pos[1]])
         self.create_connections()
 
-    def create_neighbours(self, room):
+    def create_room(self, room):
         # Main function that creates the dungeon
         free_paths = self.find_free_paths(room)
         # Uses a set to remove the paths that have been randomly chosen but are not free
         available_paths = (list(set(free_paths).intersection(room.paths)))
-        # TODO - add comments and add to analysis
         if available_paths:
             # Shuffles so that the paths are not always chosen in the same order
             random.shuffle(available_paths)
@@ -81,11 +77,9 @@ class Dungeon:
                 # Instantiates the new room and adds it to the 2D array 'rooms'
                 self.new_room = Room(self.game, random.choice(POSSIBLE_ROOMS[path]), self.new_pos)
                 self.rooms[self.new_pos[0]][self.new_pos[1]] = self.new_room
+                # Recursively calls the function to explore the newly created room and create its neighbours
+                self.create_room(self.new_room)
 
-            """Once the current room has created its neighbours,
-            the recursive function is called again with one of the neighbours as the argument.
-            As available paths is shuffled, the next room explored will be random."""
-            self.create_neighbours(self.new_room)
 
     def count_rooms(self):
         # Returns the number of rooms in the dungeon
