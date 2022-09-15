@@ -16,21 +16,12 @@ class Room:
         self.type = room_type
         # None is assigned to image as connections are not yet correctly assigned
         self.image = None
-        # Room type remains the same so text can be initialized
-        self.text = self.assign_text()
 
     def assign_image(self):
         # Assigns the image for each room based on its connections
         for key in self.game.room_path_dict:
             if self.paths == key:
                 return self.game.room_path_dict[key]
-
-    def assign_text(self):
-        # Assigns the text for each room based on its type
-        if self.type == 'normal':
-            return None
-        elif self.type == 'spawn':
-            return 'S'
 
 
 # Defines the Dungeon class
@@ -96,10 +87,10 @@ class Dungeon:
                 room = self.rooms[row][col]
                 if room:
                     pos = (col * TILESIZE, row * TILESIZE)
-                    text_pos = (pos[0] + TILESIZE // 3, pos[1] + TILESIZE // 9)
-                    text = font.render(room.text, True, RED)
                     self.game.screen.blit(room.image, pos)
-                    self.game.screen.blit(text, text_pos)
+                    # If the room is the spawn room, it displays a red overlay.
+                    if room.type == 'spawn':
+                        self.game.screen.blit(self.game.room_path_dict['red'], pos)
 
     def create_connections(self):
         """Loops through the 2D array and re-assigns the connections for each room.

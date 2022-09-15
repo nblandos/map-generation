@@ -4,19 +4,21 @@ from settings import *
 import functions as f
 import dungeon_generator as dg
 
-
+# Defines the Game class
 class Game:
     def __init__(self):
-        self.dungeon = None
+        # Initializes the Game class
         pygame.init()
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         pygame.display.set_caption(TITLE)
         self.clock = pygame.time.Clock()
         self.room_images = None
         self.room_path_dict = None
+        self.dungeon = None
         self.reset()
 
     def load_assets(self):
+        # Loads the room images from the sprite sheet
         self.room_images = f.load_sprite_sheet("assets/room_strip_opaque.png")
         self.room_path_dict = {
             'NESW': self.room_images[0],
@@ -51,6 +53,7 @@ class Game:
         self.dungeon.update()
 
     def run(self):
+        # Game loop called every frame
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
