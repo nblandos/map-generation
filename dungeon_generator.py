@@ -61,9 +61,8 @@ class Dungeon:
         free_paths = self.find_free_paths(room)
         # Uses a set to remove the paths that have been randomly chosen but are not free
         available_paths = (list(set(free_paths).intersection(room.paths)))
+
         if available_paths:
-            # Shuffles so that the paths are not always chosen in the same order
-            random.shuffle(available_paths)
             # Loops through the available generated paths and assigns the new room coordinates
             for path in available_paths:
                 if path == 'N':
@@ -79,7 +78,6 @@ class Dungeon:
                 self.rooms[self.new_pos[0]][self.new_pos[1]] = self.new_room
                 # Recursively calls the function to explore the newly created room and create its neighbours
                 self.create_room(self.new_room)
-
 
     def count_rooms(self):
         # Returns the number of rooms in the dungeon
@@ -105,8 +103,7 @@ class Dungeon:
 
     def create_connections(self):
         """Loops through the 2D array and re-assigns the connections for each room.
-        This is necessary because the connections are randomized when the rooms are created and sometimes
-        left un-explored due to MAX_DEPTH. Without this function, There would be many paths that lead nowhere."""
+        This is done to connect rooms that have been generated next to each other from different paths."""
         for row in self.rooms:
             for room in row:
                 if room:
