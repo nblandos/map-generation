@@ -42,7 +42,8 @@ class Dungeon:
 
     def generate_dungeon(self):
         # Creates the spawn room
-        self.rooms[self.start_pos[0]][self.start_pos[1]] = Room(self.game, ['N'], self.start_pos, 'spawn')
+        self.rooms[self.start_pos[0]][self.start_pos[1]] = Room(
+            self.game, ['N'], self.start_pos, 'spawn')
         # Calls the necessary functions to generate the dungeon
         self.create_room(self.rooms[self.start_pos[0]][self.start_pos[1]])
         self.create_connections()
@@ -65,7 +66,8 @@ class Dungeon:
                 elif path == 'W':
                     self.new_pos = [room.pos[0], room.pos[1] - 1]
                 # Instantiates the new room and adds it to the 2D array 'rooms'
-                self.new_room = Room(self.game, random.choice(POSSIBLE_ROOMS[path]), self.new_pos)
+                self.new_room = Room(self.game, random.choice(
+                    POSSIBLE_ROOMS[path]), self.new_pos)
                 self.rooms[self.new_pos[0]][self.new_pos[1]] = self.new_room
                 # Recursively calls the function to explore the newly created room and create its neighbours
                 self.create_room(self.new_room)
@@ -90,7 +92,8 @@ class Dungeon:
                     self.game.screen.blit(room.image, pos)
                     # If the room is the spawn room, it displays a red overlay.
                     if room.type == 'spawn':
-                        self.game.screen.blit(self.game.room_path_dict['red'], pos)
+                        self.game.screen.blit(
+                            self.game.room_path_dict['red'], pos)
 
     def create_connections(self):
         """Loops through the 2D array and re-assigns the connections for each room.
