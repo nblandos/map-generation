@@ -5,6 +5,8 @@ import functions as f
 import dungeon_generator as dg
 
 # Defines the Game class
+
+
 class Game:
     def __init__(self):
         # Initializes the Game class
